@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Portal</title>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.1/Sortable.min.js">
+    </script>
+    <style>
+        :root {
+            --bg: #f0f2f5;
+            --bg-secondary: #e8ecf1;
+            --card-bg: rgba(255, 255, 255, 0.72);
+            --card-border: rgba(255, 255, 255, 0.55);
+            --card-shadow: 0 2px 16px rgba(0, 0, 0, 0.06), 0 0 0 1px rgba(0, 0, 0, 0.04);
+            --card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.10), 0 0 0 1px rgba(0, 0, 0, 0.06);
+            --card-shadow-dragging: 0 20px 48px rgba(0, 0, 0, 0.18), 0 0 0 1.5px rgba(99, 102, 241, 0.35);
+            --text-primary: #1a1a2e;
+            --text-secondary: #5a5a7a;
+            --text-tertiary: #8a8aa8;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-soft: rgba(99, 102, 241, 0.08);
+            --glass-blur: blur(20px) saturate(180%);
+            --input-bg: rgba(255, 255, 255, 0.6);
+            --input-border: rgba(0, 0, 0, 0.08);
+            --divider: rgba(0, 0, 0, 0.06);
+            --badge-bg: rgba(99, 102, 241, 0.1);
+            --badge-text: #6366f1;
+            --glow-1: rgba(99, 102, 241, 0.10);
+            --glow-2: rgba(139, 92, 246, 0.08);
+            --glow-3: rgba(59, 130, 246, 0.07);
+            --handle-color: #c0c0d0;
+            --handle-color-hover: #8888a8;
+            --overlay-bg: rgba(0, 0, 0, 0.35);
+            --modal-bg: rgba(255, 255, 255, 0.88);
+            --modal-shadow: 0 24px 64px rgba(0, 0, 0, 0.20);
+            --btn-ghost-hover: rgba(0, 0, 0, 0.04);
+            --danger: #ef4444;
+            --danger-soft: rgba(239, 68, 68, 0.08);
+            --success: #10b981;
+            --success-soft: rgba(16, 185, 129, 0.08);
+            --warning: #f59e0b;
+            --warning-soft: rgba(245, 158, 11, 0.08);
+            --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-smooth: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --radius-sm: 10px;
+            --radius-md: 14px;
+            --radius-lg: 20px;
+            --radius-xl: 24px;
+            --font-sans: 'Inter', 'SF Pro Display', 'PingFang SC', 'Microsoft YaHei', -apple-system, BlinkMacSystemFont,
+                sans-serif;
+            --tab-active-bg: #fff;
+            --tab-inactive-bg: transparent;
+            --tab-active-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        body.dark {
+            --bg: #1a1a1a;
+            --bg-secondary: #242424;
+            --card-bg: rgba(38, 38, 38, 0.7);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-shadow: 0 2px 16px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.05);
+            --card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.10);
+            --card-shadow-dragging: 0 20px 48px rgba(0, 0, 0, 0.55), 0 0 0 1.5px rgba(170, 170, 170, 0.45);
+            --text-primary: #e8e8e8;
+            --text-secondary: #b0b0b0;
+            --text-tertiary: #888888;
+            --accent: #6366f1;
+            --accent-light: #818cf8;
+            --accent-soft: rgba(99, 102, 241, 0.08);
+            --input-bg: rgba(50, 50, 50, 0.5);
+            --input-border: rgba(255, 255, 255, 0.08);
+            --divider: rgba(255, 255, 255, 0.06);
+            --badge-bg: rgba(99, 102, 241, 0.1);
+            --badge-text: #c0c0c0;
+            --glow-1: rgba(99, 102, 241, 0.10);
+            --glow-2: rgba(139, 92, 246, 0.08);
+            --glow-3: rgba(59, 130, 246, 0.07);
+            --handle-color: #555555;
+            --handle-color-hover: #777777;
+            --overlay-bg: rgba(0, 0, 0, 0.55);
+            --modal-bg: rgba(38, 38, 38, 0.88);
+            --modal-shadow: 0 24px 64px rgba(0, 0, 0, 0.50);
+            --btn-ghost-hover: rgba(255, 255, 255, 0.06);
+            --danger: #f87171;
+            --danger-soft: rgba(248, 113, 113, 0.12);
+            --success: #34d399;
+            --success-soft: rgba(52, 211, 153, 0.12);
+            --warning: #fbbf24;
+            --warning-soft: rgba(251, 191, 36, 0.12);
+            --tab-active-bg: rgba(50, 50, 50, 0.8);
+            --tab-inactive-bg: transparent;
+            --tab-active-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+        }
+
+        @media (prefers-color-scheme: dark) {
+            body:not(.light) {
+                --bg: #1a1a1a;
+                --bg-secondary: #242424;
+                --card-bg: rgba(38, 38, 38, 0.7);
+                --card-border: rgba(255, 255, 255, 0.08);
+                --card-shadow: 0 2px 16px rgba(0, 0, 0, 0.30), 0 0 0 1px rgba(255, 255, 255, 0.05);
+                --card-shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(255, 255, 255, 0.10);
+                --card-shadow-dragging: 0 20px 48px rgba(0, 0, 0, 0.55), 0 0 0 1.5px rgba(170, 170, 170, 0.45);
+                --text-primary: #e8e8e8;
+                --text-secondary: #b0b0b0;
+                --text-tertiary: #888888;
+                --accent: #a0a0a0;
+                --accent-light: #c0c0c0;
+                --accent-soft: rgba(160, 160, 160, 0.12);
+                --input-bg: rgba(50, 50, 50, 0.5);
+                --input-border: rgba(255, 255, 255, 0.08);
+                --divider: rgba(255, 255, 255, 0.06);
+                --badge-bg: rgba(160, 160, 160, 0.15);
+                --badge-text: #c0c0c0;
+                --glow-1: rgba(160, 160, 160, 0.08);
+                --glow-2: rgba(150, 150, 150, 0.06);
+                --glow-3: rgba(140, 140, 140, 0.05);
+                --handle-color: #555555;
+                --handle-color-hover: #777777;
+                --overlay-bg: rgba(0, 0, 0, 0.55);
+                --modal-bg: rgba(38, 38, 38, 0.88);
+                --modal-shadow: 0 24px 64px rgba(0, 0, 0, 0.50);
+                --btn-ghost-hover: rgba(255, 255, 255, 0.06);
+                --danger: #f87171;
+                --danger-soft: rgba(248, 113, 113, 0.12);
+                --success: #34d399;
+                --success-soft: rgba(52, 211, 153, 0.12);
+                --warning: #fbbf24;
+                --warning-soft: rgba(251, 191, 36, 0.12);
+                --tab-active-bg: rgba(50, 50, 50, 0.8);
+                --tab-inactive-bg: transparent;
+                --tab-active-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            background: var(--bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            padding: 40px 20px 60px;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: scroll;
+            scrollbar-gutter: stable;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            transition: background var(--transition-smooth), color var(--transition-smooth);
+        }
+
+        .bg-glow {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            pointer-events: none;
+            z-index: 0;
+            opacity: 0.7;
+            transition: opacity var(--transition-smooth);
+        }
+
+        .bg-glow.glow-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--glow-1);
+            top: -15%;
+            right: -10%;
+            animation: floatGlow1 18s ease-in-out infinite;
+        }
+
+        .bg-glow.glow-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--glow-2);
+            bottom: -12%;
+            left: -8%;
+            animation: floatGlow2 22s ease-in-out infinite;
+        }
+
+        .bg-glow.glow-3 {
+            width: 350px;
+            height: 350px;
+            background: var(--glow-3);
+            top: 45%;
+            left: 55%;
+            animation: floatGlow3 20s ease-in-out infinite;
+        }
+
+        @keyframes floatGlow1 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
+            }
+            33% {
+                transform: translate(-40px, 30px) scale(1.1)
+            }
+            66% {
+                transform: translate(25px, -20px) scale(.9)
+            }
+        }
+
+        @keyframes floatGlow2 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
+            }
+            33% {
+                transform: translate(30px, -25px) scale(1.08)
+            }
+            66% {
+                transform: translate(-20px, 35px) scale(.92)
+            }
+        }
+
+        @keyframes floatGlow3 {
+            0%,
+            100% {
+                transform: translate(0, 0) scale(1)
+            }
+            50% {
+                transform: translate(-35px, -30px) scale(1.12)
+            }
+        }
+
+        .main-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 720px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 8px 0 4px;
+        }
+
+        .header-icon {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 52px;
+            height: 52px;
+            margin: 0 auto 14px;
+            background: linear-gradient(135deg, #6366f1, #818cf8);
+            border-radius: var(--radius-md);
+            font-size: 24px;
+            color: #fff;
+            font-weight: 300;
+            box-shadow: 0 8px 28px rgba(0, 0, 0, 0.18);
+            transition: box-shadow var(--transition-smooth);
+        }
+
+        .header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            color: var(--text-primary);
+            margin: 0 0 6px;
+        }
+
+        .header .subtitle {
+            font-size: 0.95rem;
+            color: var(--text-tertiary);
+        }
+
+        /* ========== 本地工具提示框（可折叠） ========== */
+        .protocol-banner {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            padding: 18px 20px;
+            border-radius: var(--radius-lg);
+            background: var(--warning-soft);
+            border: 1.5px solid rgba(245, 158, 11, 0.3);
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            transition: all var(--transition-smooth);
+            animation: cardFadeIn 0.4s ease forwards;
+            overflow: hidden;
+        }
+
+        body.dark .protocol-banner {
+            border-color: rgba(251, 191, 36, 0.3);
+        }
+
+        .banner-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            flex-wrap: nowrap;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .banner-header-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .banner-icon {
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .banner-title {
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--text-primary);
+            letter-spacing: 0.01em;
+        }
+
+        .banner-toggle-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, background var(--transition-fast);
+            flex-shrink: 0;
+        }
+
+        .banner-toggle-btn:hover {
+            background: var(--btn-ghost-hover);
+            color: var(--text-primary);
+        }
+
+        .banner-toggle-btn .arrow-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            line-height: 1;
+        }
+
+        .protocol-banner.collapsed .banner-toggle-btn .arrow-icon {
+            transform: rotate(-180deg);
+        }
+
+        .banner-body {
+            display: grid;
+            grid-template-rows: 1fr;
+            transition: grid-template-rows 0.3s ease, opacity 0.3s ease, margin-top 0.3s ease;
+            overflow: hidden;
+        }
+
+        .protocol-banner.collapsed .banner-body {
+            grid-template-rows: 0fr;
+            opacity: 0;
+            margin-top: 0;
+        }
+
+        .banner-body-inner {
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        .banner-desc {
+            font-size: 0.8rem;
+            line-height: 1.6;
+            color: var(--text-tertiary);
+            margin-top: 10px;
+        }
+
+        .banner-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .banner-btn {
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            letter-spacing: 0.02em;
+            transition: all var(--transition-fast);
+            border: 1.5px solid transparent;
+            white-space: nowrap;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-color: var(--card-border);
+        }
+
+        .banner-btn:hover {
+            background: var(--btn-ghost-hover);
+            border-color: var(--accent-light);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .banner-btn.primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .banner-btn.primary:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-light);
+        }
+
+        .banner-btn.danger {
+            background: var(--danger-soft);
+            color: var(--danger);
+            border-color: rgba(239, 68, 68, 0.3);
+        }
+
+        .banner-btn.danger:hover {
+            background: rgba(239, 68, 68, 0.15);
+            border-color: var(--danger);
+        }
+
+        .banner-instruction {
+            font-size: 0.78rem;
+            color: var(--text-tertiary);
+            line-height: 1.6;
+            background: rgba(0, 0, 0, 0.02);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+        }
+
+        body.dark .banner-instruction {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .banner-instruction code {
+            background: var(--input-bg);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'SF Mono', 'Consolas', monospace;
+            font-size: 0.85em;
+        }
+
+        /* ========== Tab 切换样式 ========== */
+        .tab-nav {
+            display: flex;
+            gap: 6px;
+            padding: 5px;
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--radius-lg);
+            border: 1.5px solid var(--card-border);
+            box-shadow: var(--card-shadow);
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 0;
+            padding: 11px 16px;
+            border-radius: var(--radius-md);
+            border: none;
+            background: var(--tab-inactive-bg);
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            letter-spacing: 0.02em;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+            position: relative;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-secondary);
+            background: var(--btn-ghost-hover);
+        }
+
+        .tab-btn.active {
+            background: var(--tab-active-bg);
+            color: var(--text-primary);
+            font-weight: 600;
+            box-shadow: var(--tab-active-shadow);
+        }
+
+        .tab-btn .tab-count {
+            display: inline-block;
+            margin-left: 5px;
+            font-size: 0.72rem;
+            font-weight: 500;
+            padding: 1px 7px;
+            border-radius: 50px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            transition: all var(--transition-fast);
+            vertical-align: 1px;
+        }
+
+        .tab-btn.active .tab-count {
+            background: var(--accent);
+            color: #fff;
+        }
+
+        .card-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            list-style: none;
+            min-height: 60px;
+        }
+
+        .card-list:empty::after {
+            content: attr(data-empty-text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 48px 20px;
+            color: var(--text-tertiary);
+            font-size: 0.95rem;
+            border: 2px dashed var(--divider);
+            border-radius: var(--radius-lg);
+            letter-spacing: 0.02em;
+            text-align: center;
+        }
+
+        .card-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 16px;
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1.5px solid var(--card-border);
+            border-radius: var(--radius-lg);
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: var(--card-shadow);
+            position: relative;
+            user-select: none;
+            animation: cardFadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            opacity: 0;
+            transform: translateY(12px);
+            will-change: transform, opacity;
+        }
+
+        .card-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .card-item:hover {
+            box-shadow: var(--card-shadow-hover);
+            transform: translateY(-2px);
+            border-color: rgba(128, 128, 128, 0.25);
+        }
+
+        .card-item:active {
+            transform: scale(0.985);
+            transition: transform 0.1s ease;
+        }
+
+        .card-item.sortable-drag {
+            box-shadow: var(--card-shadow-dragging) !important;
+            transform: scale(1.025) rotate(0.5deg) !important;
+            z-index: 999 !important;
+            border-color: var(--accent-light) !important;
+            background: var(--card-bg) !important;
+            backdrop-filter: var(--glass-blur) !important;
+            cursor: grabbing !important;
+        }
+
+        .card-item.sortable-ghost {
+            opacity: 0.35;
+            background: var(--accent-soft);
+            border: 2px dashed var(--accent-light);
+            box-shadow: none;
+            transform: scale(0.97);
+        }
+
+        .card-item.sortable-chosen {
+            z-index: 1000;
+        }
+
+        @keyframes cardFadeIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .drag-handle {
+            flex-shrink: 0;
+            width: 28px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            color: var(--handle-color);
+            transition: color var(--transition-fast);
+            border-radius: 6px;
+            touch-action: none;
+        }
+
+        .drag-handle:hover {
+            color: var(--handle-color-hover);
+        }
+
+        .drag-handle:active {
+            cursor: grabbing;
+            color: var(--accent);
+        }
+
+        .drag-handle svg {
+            width: 18px;
+            height: 18px;
+            pointer-events: none;
+        }
+
+        .card-favicon-wrap {
+            flex-shrink: 0;
+            width: 42px;
+            height: 42px;
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.03);
+            transition: all var(--transition-fast);
+        }
+
+        body.dark .card-favicon-wrap {
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .card-favicon-wrap img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+            transition: transform var(--transition-fast);
+        }
+
+        .card-item:hover .card-favicon-wrap img {
+            transform: scale(1.08);
+        }
+
+        .card-favicon-wrap .fallback-icon {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        .card-favicon-wrap .local-icon-indicator {
+            width: 28px;
+            height: 28px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .card-info {
+            flex: 1;
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            pointer-events: none;
+        }
+
+        .card-name-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .card-name {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            letter-spacing: -0.01em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-shrink: 1;
+        }
+
+        .vpn-badge-inline {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 6px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .local-badge-inline {
+            display: inline-flex;
+            align-items: center;
+            padding: 1px 6px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            background: var(--success-soft);
+            color: var(--success);
+            letter-spacing: 0.02em;
+            flex-shrink: 0;
+            white-space: nowrap;
+        }
+
+        .card-desc {
+            font-size: 0.82rem;
+            color: var(--text-tertiary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .card-url-hint {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            opacity: 0.6;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            font-family: 'SF Mono', 'Consolas', 'Menlo', monospace;
+        }
+
+        .card-actions {
+            flex-shrink: 0;
+            display: flex;
+            gap: 4px;
+            opacity: 0;
+            transition: opacity var(--transition-fast);
+            pointer-events: none;
+        }
+
+        .card-item:hover .card-actions {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        @media (hover:none) and (pointer:coarse) {
+            .card-actions {
+                opacity: 1;
+                pointer-events: auto;
+            }
+        }
+
+        .card-action-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 15px;
+            color: var(--text-tertiary);
+            transition: all var(--transition-fast);
+            position: relative;
+        }
+
+        .card-action-btn:hover {
+            background: var(--btn-ghost-hover);
+            color: var(--text-primary);
+        }
+
+        .card-action-btn.delete-btn:hover {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+
+        .card-action-btn .tooltip {
+            position: absolute;
+            bottom: 120%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--text-primary);
+            color: var(--bg);
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 6px;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity var(--transition-fast);
+            font-weight: 500;
+            letter-spacing: 0.02em;
+        }
+
+        .card-action-btn:hover .tooltip {
+            opacity: 1;
+        }
+
+        .add-section {
+            display: flex;
+            justify-content: center;
+            padding: 6px 0;
+        }
+
+        .add-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 13px 28px;
+            border-radius: 50px;
+            border: 2px dashed var(--input-border);
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            font-family: var(--font-sans);
+            font-weight: 500;
+            transition: all var(--transition-smooth);
+            letter-spacing: 0.01em;
+        }
+
+        .add-btn:hover {
+            border-color: var(--accent-light);
+            color: var(--accent);
+            background: var(--accent-soft);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(99, 102, 241, 0.12);
+        }
+
+        .footer-actions {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding-top: 4px;
+        }
+
+        .footer-link,
+        .footer-theme-btn {
+            font-size: 0.8rem;
+            color: var(--text-tertiary);
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-family: var(--font-sans);
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: all var(--transition-fast);
+            letter-spacing: 0.02em;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .footer-link:hover,
+        .footer-theme-btn:hover {
+            color: var(--text-secondary);
+            background: var(--btn-ghost-hover);
+        }
+
+        .footer-theme-btn {
+            font-size: 0.85rem;
+        }
+
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: var(--overlay-bg);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.2s ease;
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+        }
+
+        .modal-overlay.closing {
+            animation: fadeOut 0.2s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0
+            }
+            to {
+                opacity: 1
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1
+            }
+            to {
+                opacity: 0
+            }
+        }
+
+        .modal-dialog {
+            position: relative;
+            background: var(--modal-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border-radius: var(--radius-xl);
+            padding: 28px 30px;
+            width: 100%;
+            max-width: 480px;
+            box-shadow: var(--modal-shadow);
+            border: 1.5px solid var(--card-border);
+            animation: modalSlideIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: none;
+            background: transparent;
+            cursor: pointer;
+            font-size: 18px;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all var(--transition-fast);
+            z-index: 10;
+            line-height: 1;
+        }
+
+        .modal-close-btn:hover {
+            background: var(--danger-soft);
+            color: var(--danger);
+        }
+
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px) scale(.94)
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1)
+            }
+        }
+
+        .modal-dialog h3 {
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0 0 20px;
+            letter-spacing: -0.01em;
+            color: var(--text-primary);
+            padding-right: 32px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+            letter-spacing: 0.02em;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 14px;
+            border-radius: var(--radius-sm);
+            border: 1.5px solid var(--input-border);
+            background: var(--input-bg);
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            font-family: var(--font-sans);
+            outline: none;
+            transition: all var(--transition-fast);
+            letter-spacing: 0.01em;
+            resize: vertical;
+        }
+
+        .form-group textarea {
+            min-height: 60px;
+            max-height: 120px;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 4px var(--accent-soft);
+        }
+
+        .form-group .hint {
+            font-size: 0.75rem;
+            color: var(--text-tertiary);
+            margin-top: 4px;
+            letter-spacing: 0.02em;
+        }
+
+        .switch-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-height: 32px;
+        }
+
+        .switch-text {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            line-height: 1;
+            align-self: center;
+        }
+
+        .switch-label-only {
+            display: inline-flex;
+            align-items: center;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .switch-input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: relative;
+            display: inline-block;
+            width: 40px;
+            height: 22px;
+            background: var(--input-border);
+            border-radius: 22px;
+            transition: background var(--transition-fast);
+            vertical-align: middle;
+        }
+
+        .switch-slider::before {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            left: 2px;
+            top: 2px;
+            background: #fff;
+            border-radius: 50%;
+            transition: transform var(--transition-fast);
+        }
+
+        .switch-input:checked+.switch-slider {
+            background: var(--accent);
+        }
+
+        .switch-input:checked+.switch-slider::before {
+            transform: translateX(18px);
+        }
+
+        .category-selector {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .category-option {
+            flex: 1;
+            min-width: 80px;
+            padding: 10px 12px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--input-border);
+            background: var(--input-bg);
+            cursor: pointer;
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-tertiary);
+            text-align: center;
+            transition: all var(--transition-fast);
+            letter-spacing: 0.02em;
+            user-select: none;
+        }
+
+        .category-option:hover {
+            border-color: var(--accent-light);
+            color: var(--text-secondary);
+            background: var(--accent-soft);
+        }
+
+        .category-option.selected {
+            border-color: var(--accent);
+            color: var(--accent);
+            background: var(--accent-soft);
+            font-weight: 600;
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .category-option .cat-icon {
+            display: block;
+            font-size: 1.2rem;
+            margin-bottom: 2px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: flex-end;
+            margin-top: 22px;
+        }
+
+        .modal-btn {
+            padding: 10px 22px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            font-family: var(--font-sans);
+            letter-spacing: 0.02em;
+            transition: all var(--transition-fast);
+            border: 1.5px solid transparent;
+        }
+
+        .modal-btn.primary {
+            background: var(--accent);
+            color: #fff;
+            border-color: var(--accent);
+        }
+
+        .modal-btn.primary:hover {
+            background: var(--accent-light);
+            border-color: var(--accent-light);
+            box-shadow: 0 4px 18px rgba(99, 102, 241, 0.3);
+            transform: translateY(-1px);
+        }
+
+        .modal-btn.secondary {
+            background: transparent;
+            color: var(--text-secondary);
+            border-color: var(--input-border);
+        }
+
+        .modal-btn.secondary:hover {
+            background: var(--btn-ghost-hover);
+            border-color: var(--text-tertiary);
+        }
+
+        .toast-container {
+            position: fixed;
+            top: 24px;
+            right: 24px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            pointer-events: none;
+        }
+
+        .toast {
+            padding: 12px 20px;
+            border-radius: 50px;
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1.5px solid var(--card-border);
+            box-shadow: var(--card-shadow-hover);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            animation: toastIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+            letter-spacing: 0.01em;
+            pointer-events: auto;
+            cursor: pointer;
+            white-space: pre-line;
+            line-height: 1.5;
+        }
+
+        .toast.removing {
+            animation: toastOut 0.3s ease forwards;
+        }
+
+        @keyframes toastIn {
+            from {
+                opacity: 0;
+                transform: translateX(60px)
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0)
+            }
+        }
+
+        @keyframes toastOut {
+            from {
+                opacity: 1;
+                transform: translateX(0)
+            }
+            to {
+                opacity: 0;
+                transform: translateX(60px)
+            }
+        }
+
+        @media (max-width:640px) {
+            body {
+                padding: 20px 12px 40px;
+            }
+
+            .main-container {
+                gap: 18px;
+            }
+
+            .header h1 {
+                font-size: 1.5rem;
+            }
+
+            .header .subtitle {
+                font-size: 0.85rem;
+            }
+
+            .protocol-banner {
+                padding: 14px 16px;
+                gap: 12px;
+            }
+
+            .banner-btn {
+                padding: 7px 14px;
+                font-size: 0.75rem;
+            }
+
+            .tab-btn {
+                padding: 9px 10px;
+                font-size: 0.78rem;
+                border-radius: 10px;
+            }
+
+            .tab-btn .tab-count {
+                font-size: 0.65rem;
+                padding: 1px 5px;
+                margin-left: 3px;
+            }
+
+            .card-item {
+                padding: 12px 12px;
+                gap: 10px;
+                border-radius: var(--radius-md);
+            }
+
+            .card-favicon-wrap {
+                width: 36px;
+                height: 36px;
+                border-radius: 9px;
+            }
+
+            .card-favicon-wrap img {
+                width: 24px;
+                height: 24px;
+            }
+
+            .card-name {
+                font-size: 0.9rem;
+            }
+
+            .card-desc {
+                font-size: 0.75rem;
+            }
+
+            .card-actions {
+                opacity: 1;
+                pointer-events: auto;
+                gap: 2px;
+            }
+
+            .card-action-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 13px;
+            }
+
+            .drag-handle {
+                width: 24px;
+            }
+
+            .drag-handle svg {
+                width: 16px;
+                height: 16px;
+            }
+
+            .modal-dialog {
+                padding: 20px 16px;
+                border-radius: var(--radius-lg);
+                max-width: 95vw;
+            }
+
+            .modal-close-btn {
+                top: 10px;
+                right: 10px;
+                width: 32px;
+                height: 32px;
+                font-size: 16px;
+            }
+
+            .modal-dialog h3 {
+                padding-right: 28px;
+            }
+
+            .category-selector {
+                gap: 4px;
+            }
+
+            .category-option {
+                padding: 8px 6px;
+                font-size: 0.75rem;
+                border-radius: 8px;
+            }
+
+            .category-option .cat-icon {
+                font-size: 1rem;
+            }
+
+            .tab-nav {
+                gap: 3px;
+                padding: 4px;
+                border-radius: var(--radius-md);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="bg-glow glow-1"></div>
+    <div class="bg-glow glow-2"></div>
+    <div class="bg-glow glow-3"></div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <div class="main-container">
+        <header class="header">
+            <div class="header-icon">✦</div>
+            <h1>AI Portal</h1>
+            <p class="subtitle">一站式 AI 入口集合</p>
+        </header>
+
+        <!-- Tab 切换导航 -->
+        <nav class="tab-nav" id="tabNav">
+            <button class="tab-btn active" data-category="chat">
+                在线对话<span class="tab-count" id="chatCount">0</span>
+            </button>
+            <button class="tab-btn" data-category="platform">
+                开放平台<span class="tab-count" id="platformCount">0</span>
+            </button>
+            <button class="tab-btn" data-category="local">
+                本地工具<span class="tab-count" id="localCount">0</span>
+            </button>
+        </nav>
+
+        <!-- 本地工具配置面板（可折叠） -->
+        <div class="protocol-banner" id="protocolBanner">
+            <div class="banner-header" id="bannerHeader">
+                <div class="banner-header-left">
+                    <span class="banner-icon">💡</span>
+                    <span class="banner-title">本地工具启动配置</span>
+                </div>
+                <button class="banner-toggle-btn" id="bannerToggleBtn" title="折叠/展开">
+                    <span class="arrow-icon">∷</span>
+                </button>
+            </div>
+            <div class="banner-body" id="bannerBody">
+                <div class="banner-body-inner">
+                    <div class="banner-desc">
+                        本地工具一键打开仅支持 Windows 系统。<br>点击本地工具卡片将通过 <strong>launchapp://</strong> 协议直接打开应用程序。首次使用前需要注册协议。
+                    </div>
+                    <div class="banner-actions">
+                        <button class="banner-btn primary" id="downloadRegBtn">下载注册脚本</button>
+                        <button class="banner-btn" id="copyPsCmdBtn">复制终端命令</button>
+                        <button class="banner-btn danger" id="clearRegBtn">清除注册协议</button>
+                    </div>
+                    <div class="banner-instruction" id="bannerInstruction">
+                        <strong>⚡ 快速指引：</strong><br>
+                        • <strong>方法一：</strong>点击“下载注册脚本”，双击运行 <code>.reg</code> 文件。若被 Windows 安全中心拦截，请右键 → 属性 → 勾选“解除锁定”。<br>
+                        • <strong>方法二：</strong>点击“复制终端命令”，打开 <code>PowerShell</code>（Win + R 输入 powershell），粘贴并回车运行。<br>
+                        • <strong>清除：</strong>点击“清除注册协议”下载移除脚本，按照同样的方式运行该脚本。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <ul class="card-list" id="cardList" data-empty-text="暂无AI入口，点击下方按钮添加"></ul>
+
+        <div class="add-section">
+            <button class="add-btn" id="addBtn">
+                <span style="font-size:1.3rem;line-height:1;">+</span> 添加新的 AI 入口
+            </button>
+        </div>
+
+        <div class="footer-actions">
+            <button class="footer-link" id="resetBtn">恢复默认</button>
+            <button class="footer-link" id="exportBtn">📋 导出</button>
+            <button class="footer-link" id="importBtn">📥 导入</button>
+            <button class="footer-theme-btn" id="themeToggle" title="切换亮色 / 暗色模式">
+                <span id="themeIcon">🌙</span>
+            </button>
+            <input type="file" id="importFileInput" style="display:none;" accept=".json">
+        </div>
+    </div>
+
+    <!-- 新建/编辑弹窗 -->
+    <div class="modal-overlay" id="modalOverlay" style="display:none;">
+        <div class="modal-dialog">
+            <button class="modal-close-btn" id="modalCloseBtn" title="关闭">✕</button>
+            <h3 id="modalTitle">添加新的 AI 入口</h3>
+
+            <div class="form-group">
+                <label>类别</label>
+                <div class="category-selector" id="categorySelector">
+                    <div class="category-option selected" data-cat="chat">
+                        <span class="cat-icon">💬</span>在线对话
+                    </div>
+                    <div class="category-option" data-cat="platform">
+                        <span class="cat-icon">🌐</span>开放平台
+                    </div>
+                    <div class="category-option" data-cat="local">
+                        <span class="cat-icon">💻</span>本地工具
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="modalName">名称 *</label>
+                <input type="text" id="modalName" autocomplete="off" placeholder="例如：ChatGPT">
+            </div>
+            <div class="form-group" id="urlFormGroup">
+                <label for="modalUrl" id="urlLabel">网址 *</label>
+                <input type="text" id="modalUrl" autocomplete="off" placeholder="例如：https://chat.openai.com">
+                <span class="hint" id="urlHint">输入完整的网址（包含 https://）</span>
+            </div>
+            <div class="form-group">
+                <label for="modalDesc">描述</label>
+                <textarea id="modalDesc" rows="2" placeholder="简短描述这个AI助手的特点..."></textarea>
+            </div>
+            <div class="form-group">
+                <label for="modalIconUrl">图标</label>
+                <input type="text" id="modalIconUrl" autocomplete="off" placeholder="留空则自动获取网站favicon">
+                <span class="hint" id="iconHint">粘贴图片直链，如 https://example.com/icon.png</span>
+            </div>
+            <div class="form-group" id="vpnFormGroup">
+                <div class="switch-row">
+                    <span class="switch-text">需要使用境外网络</span>
+                    <label class="switch-label-only">
+                        <input type="checkbox" id="modalNeedVPN" class="switch-input">
+                        <span class="switch-slider"></span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn secondary" id="modalCancel">取消</button>
+                <button class="modal-btn primary" id="modalConfirm">确认</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            // ============ 默认数据 ============
+            const DEFAULT_AI_LIST = [{
+                id: 'deepseek',
+                name: 'DeepSeek',
+                url: 'https://chat.deepseek.com',
+                description: '深度求索',
+                isCustom: false,
+                needVPN: false,
+                iconUrl: '',
+                category: 'chat'
+            }];
+
+            const CUSTOM_PROTOCOL = 'launchapp';
+            const STORAGE_KEY = 'ai_portal_data_v8';
+            const THEME_KEY = 'ai_portal_theme_v5';
+            let aiList = [];
+            let editingId = null;
+            let sortableInstance = null;
+            let activeTab = 'chat';
+            let selectedCategory = 'chat';
+            let bannerExpanded = true; // 折叠状态
+
+            const cardList = document.getElementById('cardList');
+            const themeToggle = document.getElementById('themeToggle');
+            const themeIcon = document.getElementById('themeIcon');
+            const addBtn = document.getElementById('addBtn');
+            const resetBtn = document.getElementById('resetBtn');
+            const exportBtn = document.getElementById('exportBtn');
+            const importBtn = document.getElementById('importBtn');
+            const importFileInput = document.getElementById('importFileInput');
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalCloseBtn = document.getElementById('modalCloseBtn');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalName = document.getElementById('modalName');
+            const modalUrl = document.getElementById('modalUrl');
+            const modalDesc = document.getElementById('modalDesc');
+            const modalIconUrl = document.getElementById('modalIconUrl');
+            const modalNeedVPN = document.getElementById('modalNeedVPN');
+            const modalConfirm = document.getElementById('modalConfirm');
+            const modalCancel = document.getElementById('modalCancel');
+            const toastContainer = document.getElementById('toastContainer');
+            const categorySelector = document.getElementById('categorySelector');
+            const urlLabel = document.getElementById('urlLabel');
+            const urlHint = document.getElementById('urlHint');
+            const iconHint = document.getElementById('iconHint');
+            const vpnFormGroup = document.getElementById('vpnFormGroup');
+            const tabNav = document.getElementById('tabNav');
+            const chatCount = document.getElementById('chatCount');
+            const platformCount = document.getElementById('platformCount');
+            const localCount = document.getElementById('localCount');
+            const protocolBanner = document.getElementById('protocolBanner');
+            const bannerToggleBtn = document.getElementById('bannerToggleBtn');
+            const bannerBody = document.getElementById('bannerBody');
+            const downloadRegBtn = document.getElementById('downloadRegBtn');
+            const copyPsCmdBtn = document.getElementById('copyPsCmdBtn');
+            const clearRegBtn = document.getElementById('clearRegBtn');
+
+            // ============ 初始化 ============
+            function init() {
+                loadData();
+                applyTheme();
+                updateTabCounts();
+                renderCards();
+                updateBannerVisibility();
+                initSortable();
+                bindEvents();
+            }
+
+            function loadData() {
+                try {
+                    const saved = localStorage.getItem(STORAGE_KEY);
+                    if (saved) {
+                        const parsed = JSON.parse(saved);
+                        if (Array.isArray(parsed) && parsed.length > 0) {
+                            aiList = parsed.map(item => {
+                                if (!item.category) item.category = 'chat';
+                                return item;
+                            });
+                            return;
+                        }
+                    }
+                } catch (e) {}
+                aiList = JSON.parse(JSON.stringify(DEFAULT_AI_LIST));
+                saveData();
+            }
+
+            function saveData() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(aiList));
+            }
+
+            function updateBannerVisibility() {
+                if (activeTab === 'local') {
+                    protocolBanner.style.display = 'flex';
+                } else {
+                    protocolBanner.style.display = 'none';
+                }
+            }
+
+            function toggleBanner() {
+                bannerExpanded = !bannerExpanded;
+                if (bannerExpanded) {
+                    protocolBanner.classList.remove('collapsed');
+                } else {
+                    protocolBanner.classList.add('collapsed');
+                }
+            }
+
+            function resetToDefault() {
+                if (confirm('确定要恢复默认设置吗？')) {
+                    aiList = JSON.parse(JSON.stringify(DEFAULT_AI_LIST));
+                    saveData();
+                    updateTabCounts();
+                    renderCards();
+                    initSortable();
+                    showToast('✅ 已恢复默认设置');
+                }
+            }
+
+            // ============ 主题 ============
+            function applyTheme() {
+                const saved = localStorage.getItem(THEME_KEY);
+                if (saved === 'dark') {
+                    document.body.classList.add('dark');
+                    document.body.classList.remove('light');
+                    themeIcon.textContent = '☀️';
+                } else if (saved === 'light') {
+                    document.body.classList.add('light');
+                    document.body.classList.remove('dark');
+                    themeIcon.textContent = '🌙';
+                } else {
+                    document.body.classList.remove('light', 'dark');
+                    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+                    themeIcon.textContent = prefersDark ? '☀️' : '🌙';
+                }
+            }
+
+            function toggleTheme() {
+                const currentIsDark = document.body.classList.contains('dark') ||
+                    (!document.body.classList.contains('light') && window.matchMedia(
+                        '(prefers-color-scheme: dark)').matches);
+                if (currentIsDark) {
+                    document.body.classList.add('light');
+                    document.body.classList.remove('dark');
+                    localStorage.setItem(THEME_KEY, 'light');
+                    themeIcon.textContent = '🌙';
+                    showToast('☀️ 已切换为亮色模式');
+                } else {
+                    document.body.classList.add('dark');
+                    document.body.classList.remove('light');
+                    localStorage.setItem(THEME_KEY, 'dark');
+                    themeIcon.textContent = '☀️';
+                    showToast('🌙 已切换为暗色模式');
+                }
+            }
+
+            // ============ Tab计数更新 ============
+            function updateTabCounts() {
+                const counts = { chat: 0, platform: 0, local: 0 };
+                aiList.forEach(a => {
+                    if (counts[a.category] !== undefined) counts[a.category]++;
+                    else counts[a.category] = 1;
+                });
+                chatCount.textContent = counts.chat;
+                platformCount.textContent = counts.platform;
+                localCount.textContent = counts.local;
+            }
+
+            function getFilteredList() {
+                return aiList.filter(a => a.category === activeTab);
+            }
+
+            function getEmptyText() {
+                const map = {
+                    chat: '暂无在线对话入口，点击下方按钮添加',
+                    platform: '暂无开放平台入口，点击下方按钮添加',
+                    local: '暂无本地工具入口，点击下方按钮添加'
+                };
+                return map[activeTab] || '暂无AI入口，点击下方按钮添加';
+            }
+
+            // ============ 自定义协议URL构建 ============
+            function buildLaunchUrl(filePath) {
+                const encoded = encodeURIComponent(filePath.trim());
+                return `${CUSTOM_PROTOCOL}://${encoded}`;
+            }
+
+            // ============ 下载注册表脚本 (.reg) ============
+            function downloadRegScript() {
+                const regContent =
+                    `Windows Registry Editor Version 5.00\r\n\r\n` +
+                    `[HKEY_CURRENT_USER\\Software\\Classes\\${CUSTOM_PROTOCOL}]\r\n` +
+                    `@="URL:LaunchApp Protocol"\r\n` +
+                    `"URL Protocol"=""\r\n\r\n` +
+                    `[HKEY_CURRENT_USER\\Software\\Classes\\${CUSTOM_PROTOCOL}\\shell\\open\\command]\r\n` +
+                    `@="powershell -NoProfile -WindowStyle Hidden -Command \\"Start-Process -FilePath ([System.Uri]::UnescapeDataString(('%1' -replace '${CUSTOM_PROTOCOL}://',''))) -WindowStyle Normal\\""\r\n`;
+
+                const blob = new Blob([regContent], { type: 'text/plain;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `register_${CUSTOM_PROTOCOL}.reg`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showToast('📥 注册脚本已下载，请根据指引进行操作');
+            }
+
+            // ============ 复制PowerShell命令 ============
+            function copyPsCommand() {
+                const psCmd =
+                    `$protocol = "${CUSTOM_PROTOCOL}";` +
+                    `$regPath = "HKCU:\\Software\\Classes\\$protocol";` +
+                    `New-Item -Path $regPath -Force | Out-Null;` +
+                    `Set-ItemProperty -Path $regPath -Name "(Default)" -Value "URL:LaunchApp Protocol" -Force;` +
+                    `New-ItemProperty -Path $regPath -Name "URL Protocol" -Value "" -Force;` +
+                    `New-Item -Path "$regPath\\shell\\open\\command" -Force | Out-Null;` +
+                    `$command = 'powershell -NoProfile -WindowStyle Hidden -Command "Start-Process -FilePath ([System.Uri]::UnescapeDataString((''%1'' -replace ''${CUSTOM_PROTOCOL}://'',''''))) -WindowStyle Normal"';` +
+                    `Set-ItemProperty -Path "$regPath\\shell\\open\\command" -Name "(Default)" -Value $command -Force;` +
+                    `Write-Host "✅ 协议注册成功！" -ForegroundColor Green`;
+
+                navigator.clipboard.writeText(psCmd).then(() => {
+                    showToast('📋 PowerShell 命令已复制，请根据指引进行操作');
+                }).catch(() => {
+                    showToast('⚠️ PowerShell 命令复制失败，请手动复制如下命令：\n' + psCmd + '\n然后根据指引进行操作。', 5000);
+                });
+            }
+
+            // ============ 下载清除注册表脚本 (.reg) ============
+            function downloadClearRegScript() {
+                const regContent =
+                    `Windows Registry Editor Version 5.00\r\n\r\n` +
+                    `[-HKEY_CURRENT_USER\\Software\\Classes\\${CUSTOM_PROTOCOL}]\r\n`;
+
+                const blob = new Blob([regContent], { type: 'text/plain;charset=utf-8' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `clear_${CUSTOM_PROTOCOL}.reg`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showToast('📥 清除脚本已下载，请根据指引进行操作');
+            }
+
+            // ============ 启动本地应用程序 ============
+            function launchLocalApp(filePath) {
+                const trimmedPath = filePath.trim();
+                if (!trimmedPath) {
+                    showToast('⚠️ 文件路径为空，无法启动');
+                    return;
+                }
+
+                const launchUrl = buildLaunchUrl(trimmedPath);
+
+                // 复制路径到剪贴板
+                navigator.clipboard.writeText(trimmedPath).then(() => {
+                    // 静默成功
+                }).catch(() => {});
+
+                // 尝试通过自定义协议打开
+                try {
+                    const newWindow = window.open(launchUrl, '_blank', 'noopener,noreferrer');
+                    setTimeout(() => {
+                        if (newWindow && !newWindow.closed) {
+                            try { newWindow.close(); } catch (e) {}
+                        }
+                    }, 800);
+                } catch (e) {}
+
+                const shortPath = trimmedPath.length > 45 ? '...' + trimmedPath.slice(-42) : trimmedPath;
+                showToast(`🚀 正在尝试启动本地应用\n📋 路径已复制: ${shortPath}`, 5000);
+            }
+
+            // ============ 渲染卡片 ============
+            function renderCards() {
+                cardList.innerHTML = '';
+                cardList.setAttribute('data-empty-text', getEmptyText());
+                const filtered = getFilteredList();
+                filtered.forEach((ai, index) => {
+                    const card = createCardElement(ai, index);
+                    cardList.appendChild(card);
+                    requestAnimationFrame(() => card.classList.add('visible'));
+                });
+            }
+
+            function createCardElement(ai, index) {
+                const isLocal = ai.category === 'local';
+                const li = document.createElement('li');
+                li.className = 'card-item';
+                li.setAttribute('data-id', ai.id);
+                li.style.animationDelay = `${index * 0.05}s`;
+
+                const handle = document.createElement('div');
+                handle.className = 'drag-handle';
+                handle.innerHTML =
+                    `<svg viewBox="0 0 24 24" fill="currentColor"><circle cx="9" cy="5" r="1.8"/><circle cx="15" cy="5" r="1.8"/><circle cx="9" cy="12" r="1.8"/><circle cx="15" cy="12" r="1.8"/><circle cx="9" cy="19" r="1.8"/><circle cx="15" cy="19" r="1.8"/></svg>`;
+
+                const faviconWrap = document.createElement('div');
+                faviconWrap.className = 'card-favicon-wrap';
+
+                let iconSrc = null;
+                if (ai.iconUrl && ai.iconUrl.trim() !== '') {
+                    iconSrc = ai.iconUrl.trim();
+                } else if (!isLocal) {
+                    const rootDomain = getRootDomain(ai.url);
+                    if (rootDomain) {
+                        iconSrc = `https://${rootDomain}/favicon.ico`;
+                    }
+                }
+
+                if (isLocal && !iconSrc) {
+                    const localIcon = document.createElement('span');
+                    localIcon.className = 'local-icon-indicator';
+                    localIcon.textContent = '🖥️';
+                    faviconWrap.appendChild(localIcon);
+                } else if (iconSrc) {
+                    const img = document.createElement('img');
+                    img.alt = `${ai.name} favicon`;
+                    img.loading = 'lazy';
+                    img.src = iconSrc;
+                    img.onerror = function () {
+                        img.style.display = 'none';
+                        if (!faviconWrap.querySelector('.fallback-icon')) {
+                            const fb = document.createElement('span');
+                            fb.className = 'fallback-icon';
+                            fb.textContent = ai.name.charAt(0).toUpperCase();
+                            faviconWrap.appendChild(fb);
+                        }
+                    };
+                    faviconWrap.appendChild(img);
+                } else {
+                    const fb = document.createElement('span');
+                    fb.className = 'fallback-icon';
+                    fb.textContent = ai.name.charAt(0).toUpperCase();
+                    faviconWrap.appendChild(fb);
+                }
+
+                const info = document.createElement('div');
+                info.className = 'card-info';
+                const nameRow = document.createElement('div');
+                nameRow.className = 'card-name-row';
+                const nameSpan = document.createElement('span');
+                nameSpan.className = 'card-name';
+                nameSpan.textContent = ai.name;
+                nameRow.appendChild(nameSpan);
+                if (isLocal) {
+                    const localBadge = document.createElement('span');
+                    localBadge.className = 'local-badge-inline';
+                    localBadge.textContent = 'LOCAL';
+                    nameRow.appendChild(localBadge);
+                }
+                if (ai.needVPN && !isLocal) {
+                    const vpnBadge = document.createElement('span');
+                    vpnBadge.className = 'vpn-badge-inline';
+                    vpnBadge.textContent = 'VPN';
+                    nameRow.appendChild(vpnBadge);
+                }
+                const desc = document.createElement('span');
+                desc.className = 'card-desc';
+                desc.textContent = ai.description || (isLocal ? getPathShort(ai.url) : getDomainShort(ai.url));
+                const urlHintEl = document.createElement('span');
+                urlHintEl.className = 'card-url-hint';
+                urlHintEl.textContent = isLocal ? getPathShort(ai.url) : getDomainShort(ai.url);
+
+                info.appendChild(nameRow);
+                info.appendChild(desc);
+                info.appendChild(urlHintEl);
+
+                const actions = document.createElement('div');
+                actions.className = 'card-actions';
+                const editBtn = document.createElement('button');
+                editBtn.className = 'card-action-btn';
+                editBtn.innerHTML = '✎<span class="tooltip">编辑</span>';
+                editBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    openEditModal(ai);
+                });
+                const deleteBtn = document.createElement('button');
+                deleteBtn.className = 'card-action-btn delete-btn';
+                deleteBtn.innerHTML = '✕<span class="tooltip">删除</span>';
+                deleteBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    confirmDelete(ai);
+                });
+                actions.appendChild(editBtn);
+                actions.appendChild(deleteBtn);
+
+                li.appendChild(handle);
+                li.appendChild(faviconWrap);
+                li.appendChild(info);
+                li.appendChild(actions);
+
+                // 卡片点击逻辑
+                li.addEventListener('click', (e) => {
+                    if (e.target.closest('.card-action-btn') || e.target.closest('.drag-handle'))
+                        return;
+                    if (isLocal) {
+                        launchLocalApp(ai.url);
+                    } else {
+                        window.open(ai.url, '_blank', 'noopener,noreferrer');
+                        showToast(`🚀 正在打开 ${ai.name}`);
+                    }
+                });
+
+                return li;
+            }
+
+            // ============ Sortable ============
+            function initSortable() {
+                if (sortableInstance) sortableInstance.destroy();
+                const filtered = getFilteredList();
+                if (filtered.length === 0) {
+                    sortableInstance = null;
+                    return;
+                }
+                sortableInstance = new Sortable(cardList, {
+                    handle: '.drag-handle',
+                    animation: 200,
+                    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+                    ghostClass: 'sortable-ghost',
+                    dragClass: 'sortable-drag',
+                    chosenClass: 'sortable-chosen',
+                    onEnd: function () {
+                        const newOrderIds = [];
+                        cardList.querySelectorAll('.card-item').forEach(card => {
+                            newOrderIds.push(card.getAttribute('data-id'));
+                        });
+                        const currentCategoryItems = aiList.filter(a => a.category === activeTab);
+                        const newOrderMap = new Map(newOrderIds.map((id, idx) => [id, idx]));
+                        const reorderedCurrent = [...currentCategoryItems].sort((a, b) => {
+                            const idxA = newOrderMap.get(a.id) ?? 999;
+                            const idxB = newOrderMap.get(b.id) ?? 999;
+                            return idxA - idxB;
+                        });
+                        let rcIdx = 0;
+                        for (let i = 0; i < aiList.length; i++) {
+                            if (aiList[i].category === activeTab) {
+                                aiList[i] = reorderedCurrent[rcIdx++];
+                            }
+                        }
+                        saveData();
+                        showToast('📋 排序已保存');
+                    }
+                });
+            }
+
+            // ============ Tab切换 ============
+            function switchTab(category) {
+                if (activeTab === category) return;
+                activeTab = category;
+                tabNav.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.getAttribute('data-category') === category);
+                });
+                updateBannerVisibility();
+                renderCards();
+                initSortable();
+            }
+
+            // ============ 弹窗相关 ============
+            function updateModalForCategory(cat) {
+                selectedCategory = cat;
+                categorySelector.querySelectorAll('.category-option').forEach(opt => {
+                    opt.classList.toggle('selected', opt.getAttribute('data-cat') === cat);
+                });
+                if (cat === 'local') {
+                    urlLabel.textContent = '可执行文件路径 *';
+                    modalUrl.placeholder = '例如：C:\\Program Files\\MyApp\\app.exe';
+                    urlHint.textContent = '输入本地可执行文件的完整路径（支持 exe、bat、lnk 等）';
+                    iconHint.textContent = '留空则显示电脑图标（本地工具不自动获取图标）';
+                    vpnFormGroup.style.display = 'none';
+                    modalNeedVPN.checked = false;
+                } else {
+                    urlLabel.textContent = '网址 *';
+                    modalUrl.placeholder = '例如：https://chat.openai.com';
+                    urlHint.textContent = '输入完整的网址（包含 https://）';
+                    iconHint.textContent = '粘贴图片直链，如 https://example.com/icon.png';
+                    vpnFormGroup.style.display = 'block';
+                }
+            }
+
+            function openAddModal() {
+                editingId = null;
+                modalTitle.textContent = '添加新的 AI 入口';
+                modalName.value = '';
+                modalUrl.value = '';
+                modalDesc.value = '';
+                modalIconUrl.value = '';
+                modalNeedVPN.checked = false;
+                modalConfirm.textContent = '确认';
+                updateModalForCategory(activeTab);
+                showModal();
+                setTimeout(() => modalName.focus(), 150);
+            }
+
+            function openEditModal(ai) {
+                editingId = ai.id;
+                modalTitle.textContent = '编辑 AI 入口';
+                modalName.value = ai.name;
+                modalUrl.value = ai.url;
+                modalDesc.value = ai.description || '';
+                modalIconUrl.value = ai.iconUrl || '';
+                modalNeedVPN.checked = ai.needVPN || false;
+                modalConfirm.textContent = '保存';
+                updateModalForCategory(ai.category || 'chat');
+                showModal();
+                setTimeout(() => modalName.focus(), 150);
+            }
+
+            function showModal() {
+                // 使用 scrollbar-gutter: stable 保持页面宽度不变，只需隐藏滚动
+                document.body.style.overflow = 'hidden';
+                modalOverlay.style.display = 'flex';
+                modalOverlay.classList.remove('closing');
+            }
+
+            function closeModal() {
+                document.body.style.overflow = '';
+                modalOverlay.classList.add('closing');
+                setTimeout(() => {
+                    modalOverlay.style.display = 'none';
+                }, 180);
+                editingId = null;
+            }
+
+            function handleModalConfirm() {
+                const name = modalName.value.trim();
+                let url = modalUrl.value.trim();
+                const cat = selectedCategory;
+
+                if (!name) {
+                    showToast('⚠️ 请输入名称');
+                    modalName.focus();
+                    return;
+                }
+                if (!url) {
+                    showToast('⚠️ 请输入' + (cat === 'local' ? '可执行文件路径' : '网址'));
+                    modalUrl.focus();
+                    return;
+                }
+
+                if (cat !== 'local') {
+                    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+                    try {
+                        const u = new URL(url);
+                        if (!u.hostname.includes('.')) throw new Error();
+                    } catch (e) {
+                        showToast('⚠️ 请输入有效的网址');
+                        modalUrl.focus();
+                        return;
+                    }
+                }
+
+                const desc = modalDesc.value.trim();
+                const iconUrl = modalIconUrl.value.trim();
+                const needVPN = cat === 'local' ? false : modalNeedVPN.checked;
+
+                if (editingId) {
+                    const target = aiList.find(a => a.id === editingId);
+                    if (target) {
+                        target.name = name;
+                        target.url = url;
+                        target.description = desc;
+                        target.iconUrl = iconUrl;
+                        target.needVPN = needVPN;
+                        target.category = cat;
+                        showToast('✅ 修改已保存');
+                    }
+                } else {
+                    aiList.push({
+                        id: 'custom_' + Date.now(),
+                        name,
+                        url,
+                        description: desc,
+                        iconUrl,
+                        isCustom: true,
+                        needVPN,
+                        category: cat
+                    });
+                    showToast('✅ 已添加');
+                }
+                editingId = null;
+                saveData();
+                updateTabCounts();
+                renderCards();
+                initSortable();
+                closeModal();
+            }
+
+            function confirmDelete(ai) {
+                if (confirm(`确定要删除「${ai.name}」吗？`)) {
+                    aiList = aiList.filter(a => a.id !== ai.id);
+                    saveData();
+                    updateTabCounts();
+                    renderCards();
+                    initSortable();
+                    showToast(`🗑️ 已删除「${ai.name}」`);
+                }
+            }
+
+            // ============ 导入导出 ============
+            function exportConfig() {
+                const blob = new Blob([JSON.stringify(aiList, null, 2)], { type: 'application/json' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = `ai-portal-config-${new Date().toISOString().slice(0, 10)}.json`;
+                a.click();
+                URL.revokeObjectURL(a.href);
+                showToast('📋 配置已导出');
+            }
+
+            function importConfig(file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const data = JSON.parse(e.target.result);
+                        if (!Array.isArray(data) || data.length === 0) throw new Error();
+                        for (const item of data)
+                            if (!item.name || !item.url || !item.id) throw new Error();
+                        if (confirm(`即将导入 ${data.length} 个 AI 入口，这将会覆盖当前配置，确定吗？`)) {
+                            aiList = data.map(item => {
+                                if (!item.category) item.category = 'chat';
+                                return item;
+                            });
+                            saveData();
+                            updateTabCounts();
+                            renderCards();
+                            initSortable();
+                            showToast(`✅ 成功导入 ${data.length} 个 AI 入口`);
+                        }
+                    } catch (ex) {
+                        showToast('⚠️ 文件格式无效');
+                    }
+                };
+                reader.readAsText(file);
+                importFileInput.value = '';
+            }
+
+            // ============ Toast ============
+            function showToast(msg, duration = 2200, onClick = null) {
+                const toast = document.createElement('div');
+                toast.className = 'toast';
+                toast.textContent = msg;
+                toastContainer.appendChild(toast);
+
+                let timeoutId;
+                const remove = () => {
+                    clearTimeout(timeoutId);
+                    toast.classList.add('removing');
+                    setTimeout(() => toast.remove(), 300);
+                };
+
+                timeoutId = setTimeout(remove, duration);
+
+                toast.addEventListener('click', () => {
+                    if (onClick) onClick();
+                    remove();
+                });
+            }
+
+            // ============ 工具函数 ============
+            function getRootDomain(url) {
+                try {
+                    const hostname = new URL(url).hostname;
+                    const parts = hostname.split('.');
+                    if (parts.length > 2) return parts.slice(-2).join('.');
+                    return hostname;
+                } catch (e) { return ''; }
+            }
+
+            function getDomainShort(url) {
+                try { return new URL(url).hostname.replace(/^www\./, ''); } catch (e) { return url; }
+            }
+
+            function getPathShort(path) {
+                if (!path) return '';
+                const cleaned = path.replace(/\\/g, '/');
+                const parts = cleaned.split('/');
+                const last = parts[parts.length - 1] || parts[parts.length - 2] || cleaned;
+                if (last.length > 40) return '...' + last.slice(-37);
+                return last || cleaned;
+            }
+
+            // ============ 事件绑定 ============
+            function bindEvents() {
+                themeToggle.addEventListener('click', toggleTheme);
+                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
+                    if (!localStorage.getItem(THEME_KEY)) applyTheme();
+                });
+
+                tabNav.addEventListener('click', (e) => {
+                    const btn = e.target.closest('.tab-btn');
+                    if (!btn) return;
+                    const cat = btn.getAttribute('data-category');
+                    if (cat) switchTab(cat);
+                });
+
+                categorySelector.addEventListener('click', (e) => {
+                    const opt = e.target.closest('.category-option');
+                    if (!opt) return;
+                    const cat = opt.getAttribute('data-cat');
+                    if (cat) updateModalForCategory(cat);
+                });
+
+                // 折叠面板
+                bannerToggleBtn.addEventListener('click', toggleBanner);
+                // 点击标题栏也可折叠
+                document.getElementById('bannerHeader').addEventListener('click', (e) => {
+                    if (e.target === bannerToggleBtn || bannerToggleBtn.contains(e.target)) return;
+                    toggleBanner();
+                });
+
+                // 本地工具配置按钮
+                downloadRegBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    downloadRegScript();
+                });
+                copyPsCmdBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    copyPsCommand();
+                });
+                clearRegBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    downloadClearRegScript();
+                });
+
+                addBtn.addEventListener('click', openAddModal);
+                modalCancel.addEventListener('click', closeModal);
+                modalCloseBtn.addEventListener('click', closeModal);
+                modalConfirm.addEventListener('click', handleModalConfirm);
+                document.addEventListener('keydown', (e) => {
+                    if (e.key === 'Escape' && modalOverlay.style.display === 'flex') closeModal();
+                    if (e.key === 'Enter' && modalOverlay.style.display === 'flex' && e.target
+                        .tagName !== 'TEXTAREA') {
+                        e.preventDefault();
+                        handleModalConfirm();
+                    }
+                    if ((e.ctrlKey || e.metaKey) && e.key === 'n') {
+                        e.preventDefault();
+                        openAddModal();
+                    }
+                });
+
+                resetBtn.addEventListener('click', resetToDefault);
+                exportBtn.addEventListener('click', exportConfig);
+                importBtn.addEventListener('click', () => importFileInput.click());
+                importFileInput.addEventListener('change', (e) => {
+                    if (e.target.files?.[0]) importConfig(e.target.files[0]);
+                });
+            }
+
+            init();
+        })();
+    </script>
+</body>
+
+</html>
