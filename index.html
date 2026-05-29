@@ -1466,21 +1466,19 @@
 
             <div class="form-group">
                 <label for="modalName">名称 *</label>
-                <input type="text" id="modalName" autocomplete="off" placeholder="例如：ChatGPT">
+                <input type="text" id="modalName" autocomplete="off">
             </div>
             <div class="form-group" id="urlFormGroup">
                 <label for="modalUrl" id="urlLabel">网址 *</label>
-                <input type="text" id="modalUrl" autocomplete="off" placeholder="例如：https://chat.openai.com">
-                <span class="hint" id="urlHint">输入完整的网址（包含 https://）</span>
+                <input type="text" id="modalUrl" autocomplete="off">
             </div>
             <div class="form-group">
                 <label for="modalDesc">描述</label>
-                <textarea id="modalDesc" rows="2" placeholder="简短描述这个AI助手的特点..."></textarea>
+                <textarea id="modalDesc" rows="2"></textarea>
             </div>
             <div class="form-group">
                 <label for="modalIconUrl">图标</label>
-                <input type="text" id="modalIconUrl" autocomplete="off" placeholder="留空则自动获取网站favicon">
-                <span class="hint" id="iconHint">粘贴图片直链，如 https://example.com/icon.png</span>
+                <input type="text" id="modalIconUrl" autocomplete="off">
             </div>
             <div class="form-group" id="vpnFormGroup">
                 <div class="switch-row">
@@ -1962,16 +1960,10 @@
                 });
                 if (cat === 'local') {
                     urlLabel.textContent = '可执行文件路径 *';
-                    modalUrl.placeholder = '例如：C:\\Program Files\\MyApp\\app.exe';
-                    urlHint.textContent = '输入本地可执行文件的完整路径（支持 exe、bat、lnk 等）';
-                    iconHint.textContent = '留空则显示电脑图标（本地工具不自动获取图标）';
                     vpnFormGroup.style.display = 'none';
                     modalNeedVPN.checked = false;
                 } else {
                     urlLabel.textContent = '网址 *';
-                    modalUrl.placeholder = '例如：https://chat.openai.com';
-                    urlHint.textContent = '输入完整的网址（包含 https://）';
-                    iconHint.textContent = '粘贴图片直链，如 https://example.com/icon.png';
                     vpnFormGroup.style.display = 'block';
                 }
             }
